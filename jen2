@@ -1,0 +1,11 @@
+Jsp
+Clean workspace
+Fetch jsp files
+Build war
+Deploy
+Verify
+Post
+
+Npm install
+Node index.js
+Curl http://localhost:3000
