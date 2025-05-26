@@ -1,0 +1,76 @@
+3 .gitlab-ci.yml 
+image: tomcat:10-jdk17-temurin  
+
+
+stages:
+  - build
+  - test
+  - deploy
+
+
+build-job:
+  stage: build
+  script:
+    - echo "Compiling Java code..."
+    - javac Hello.java
+    - ls -l                      
+  artifacts:
+    paths:
+      - "Hello.class"                    
+  only:
+    - main
+
+
+test-job:
+  stage: test
+  script:
+    - echo "Running Tests..."
+    - java Hello        
+  only:
+    - main
+
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo " deploying!"
+    - echo "Application deployed successfully!"
+  only:
+    - main
+
+
+Q:
+# Use Node.js image for the CI pipeline
+image: node:20-alpine
+
+
+stages:
+  - build
+  - deploy
+
+
+# Build the website and create the public folder
+build-job:
+  stage: build
+  script:
+    - mkdir -p public
+    - cp index.html public/
+    - cp style.css public/
+  artifacts:
+    paths:
+      - public  # Store public folder as an artifact
+
+
+# GitLab Pages deployment job
+pages:
+  stage: deploy
+  script:
+    - echo "Deploying website..."
+  artifacts:
+    paths:
+      - public  # Serve the public folder on GitLab Pages
+  only:
+    - main
+
+
+
