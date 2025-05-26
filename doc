@@ -1,0 +1,175 @@
+5
+
+FROM Ubuntu:latest
+RUN apt-get update && apt-get install -y\
+curl \
+vim
+CMD[“bash”]
+
+FROM openjdk:11-jdk
+WORKDIR /app
+COPY build/HelloWorld.class .
+CMD ["java", "HelloWorld"] 
+
+pipeline { 	agent any 	stages {     	stage('Clone') {         	steps {
+            	git 'https://github.com/shrutikadam-student/jenkins-java-demo.git'
+        	}
+    	}
+    	stage('Build Java Class') {         	steps {
+            	sh 'javac HelloWorld.java'
+    	}
+    	stage('Build Docker Image') {
+        	steps {             	script {
+                	def image = docker.build("hello-world-image")
+            	}
+        	}
+    	}
+    	stage('Run Docker Container') {
+        	steps {             	script {
+                    docker.image("hello-world-image").run()
+            	}
+        	}
+    	}
+	}
+} 
+
+Dockerfile
+# Use an official Node.js runtime as a base image
+FROM node:18
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the application files
+COPY . .
+
+# Install dependencies
+RUN npm init -y
+RUN npm install
+RUN npm install express
+
+# Expose the application port
+EXPOSE 8082
+
+# Command to run the application
+CMD ["node", "index.js"]
+
+Pipeline{
+         agent any
+	environment {
+    	IMAGE_NAME = "login-node-app"
+    	CONTAINER_NAME = "login-app-container"
+	}
+	stages {
+    	stage('Clone Repo') {
+        	steps {
+            	git credentialsId: 'github-creds', url: 'https://github.com/shrutikadam-student/jenkins-java-demo.git'
+        	}
+    	}
+    	stage('Build Docker Image') {
+        	steps {             	script {
+                	dockerImage = docker.build("${IMAGE_NAME}")
+            	}
+        	}
+    	}
+    	stage('Remove Existing Container') {
+        	steps {             	script {
+                	sh "docker rm -f ${CONTAINER_NAME} || true"
+            	}
+        	}
+    	}
+    	stage('Run Docker Container') {
+        	steps {             	script {
+                    docker.image("${IMAGE_NAME}").run("-d -p 8082:8082 --name ${CONTAINER_NAME}")
+            	}
+        	}
+    	}
+	}
+}
+ 
+
+build:docker build -t mynodeimg:v1 .
+run:docker run -p 8080:8082 mynodeimg:v1
+
+FROM nginx:stable-alpine3.17-slim
+COPY index.html /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+Docker build -t myapp:v1
+Docker images
+Docker run -p 8080:80 myapp:v1
+
+#jsp
+text
+# Use the official Tomcat image with JDK 17
+FROM tomcat:10.1-jdk17
+
+# Set working directory inside the container
+WORKDIR /usr/local/tomcat/webapps/dockJSP
+
+# Copy JSP, HTML files, and WEB-INF folder into the container
+COPY src/main/webapp/*.jsp /usr/local/tomcat/webapps/dockJSP/
+COPY src/main/webapp/*.html /usr/local/tomcat/webapps/dockJSP/
+COPY src/main/webapp/WEB-INF /usr/local/tomcat/webapps/dockJSP/WEB-INF/
+
+# Expose port 8080 for Tomcat
+EXPOSE 8080
+
+# Start Tomcat
+CMD ["catalina.sh", "run"]
+
+#java
+# Use official OpenJDK base image
+FROM openjdk:latest
+
+# Set working directory
+WORKDIR /app
+
+# Copy Java program to the container
+COPY HelloWorld.java .
+
+# Compile Java program
+RUN javac HelloWorld.java
+
+# Command to run Java program
+CMD ["java", "HelloWorld"]
+
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_PATH = "E:/Docker/JSP/exp2"
+        IMAGE_NAME = "my-java-app"
+        CONTAINER_NAME = "java-container"
+    }
+
+    stages {
+        stage('Build Java Application') {
+            steps {
+                script {
+                    bat "javac %PROJECT_PATH%/HelloWorld.java"
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    bat "docker build -t %IMAGE_NAME% %PROJECT_PATH%"
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    bat "docker run --rm --name %CONTAINER_NAME% %IMAGE_NAME%"
+                }
+            }
+        }
+    }
+}
+
+
