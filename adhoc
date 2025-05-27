@@ -1,0 +1,95 @@
+ansible local -m ping: Check connectivity.
+
+ansible all -m ping: Check all hosts.
+
+ansible local -m ping -V: Run in verbose mode.
+
+ansible local -m ping --limit 192.168.1.10: Run for a specific IP.
+
+ansible local -m ping -o: Show output in JSON.
+
+ansible all -m ping -i inventory.txt: Use an inventory file.
+
+ansible local -m shell -a "echo 'Hello Ansible'": Print message.
+
+ansible local -m shell -a "uptime": Display system uptime.
+
+ansible local -m shell -a "df -h": Check disk usage.
+
+ansible local -m shell -a "free -m": Check memory usage.
+
+ansible local -m shell -a "ls -l /tmp | grep test": Filter file list.
+
+ansible local -m shell -a "echo 'Hello World' > /tmp/hello.txt": Create a file.
+
+ansible local -m shell -a "chmod 644 /tmp/hello.txt": Change file permissions.
+
+ansible local -m shell -a "whoami": Display current user.
+
+ansible local -m shell -a "cat /etc/os-release": Show OS details.
+
+ansible local -m shell -a "rm -f /tmp/hello.txt": Delete file.
+
+ansible local -m shell -a "mkdir -p /opt/testdir": Create directory.
+
+ansible local -m shell -a "cat /etc/passwd | wc -l": Count users.
+
+ansible local -m command -a "uptime": Show uptime.
+
+ansible local -m command -a "df -h": Check disk usage.
+
+ansible local -m command -a "ls -l /etc": List files.
+
+ansible local -m command -a "whoami": Show executing user.
+
+ansible local -m command -a "date": Show date/time.
+
+ansible local -m command -a "cat /etc/os-release": Show OS details.
+
+ansible local -m command -a "hostname": Show hostname.
+
+ansible local -m command -a "uname -r": Show Linux kernel version.
+
+ansible local -m command -a "echo Hello": Print message.
+
+ansible local -m command -a "touch /tmp/testfile": Create empty file.
+
+ansible local -m file -a "path=/tmp/testfile.txt state=touch": Create file.
+
+ansible local -m file -a "path=/tmp/mydir state=directory": Create directory.
+
+ansible local -m file -a "path=/tmp/testfile.txt mode=0644": Change permissions.
+
+ansible local -m file -a "path=/tmp/mydir state=absent": Delete directory.
+
+ansible local -m file -a "path=/tmp/testfile.txt state=absent": Delete file.
+
+ansible local -m file -a "path=/tmp/testfile.txt owner=root": Change owner.
+
+ansible local -m file -a "path=/tmp/testfile.txt group=root": Change group.
+
+ansible local -m file -a "path=/var/log/test.log state=touch mode=0600": Create log file with secure permissions.
+
+ansible local -m file -a "path=/home/user/data state=directory mode=0755": Create directory with permissions.
+
+ansible local -m file -a "path=/opt/config.conf state=file mode=0644": Create config file.
+
+ansible local -m user -a "name=testuser state=present": Create user.
+
+ansible local -m user -a "name=testuser state=absent": Delete user.
+
+ansible local -m user -a "name=testuser password={{ 'password123' | password_hash('sha512') }}": Create user with password.
+
+ansible local -m user -a "name=testuser shell=/bin/bash": Set shell.
+
+ansible local -m user -a "name=testuser groups=sudo": Add to sudo group.
+
+ansible local -m user -a "name=testuser home=/home/testuser": Set home directory.
+
+ansible local -m user -a "name=testuser state=present uid=1050": Set UID.
+
+ansible local -m user -a "name=testuser expires=1672531199": Set expiry date.
+
+ansible local -m user -a "name=testuser remove=yes": Delete user and home.
+
+ansible local -m user -a "name=testuser comment='New Developer'": Add description.
