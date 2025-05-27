@@ -1,0 +1,165 @@
+6
+Wsl -l -v
+Wsl
+Wsl -d Ubuntu-22.04
+Sudo apt update&&sudo apt upgrade -y
+Sudo apt install ansible -y
+Ansible --version
+sudo mkdir -p /etc/ansible
+
+sudo vi /etc/ansible/hosts
+	[local]
+            //inventory
+            localhost ansible_connection=local
+Ansible local -m ping
+
+
+Q:playbook
+Cd /home/myansible
+Sudo vi hello.yml
+---
+- name: Hello World PlayBook1
+  hosts: localhost
+  tasks:
+    - name: print hello msg
+      debug:
+        msg: "Hello World"
+
+Ansible-playbook /home/myansible/hello.yml
+
+Q:node
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello, Node.js Server!');
+});
+
+server.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+
+---
+- name: Deploy NOdeJs App
+  hosts: localhost
+  become: true
+  tasks:
+    - name: ensure node.js is installed
+      apt:
+        name: nodejs
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: install npm
+      apt:
+        name: npm
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Copy of node.js to /opt
+      copy:
+        src: /home/myansible/node.js
+        dest: /opt/node.js
+        mode: '0755'
+
+    - name: run node.js app
+      shell: nohup node /opt/node.js &
+      args:
+        chdir: /opt/
+
+Q:confniguration mng
+Sudo vi custapache.conf
+
+<VirtualHost *:80>
+    ServerAdmin admin@example.com
+    DocumentRoot /var/www/html
+    ServerName example.com
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+---
+- name: Apache Configuration Management
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Copy custom Apache Configuration file
+      copy:
+        src: /home/myansibleplaybooks/custom_apache.conf
+        dest: /etc/apache2/sites-available/custom_apache.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload Apache to apply changes
+      systemd:
+        name: apache2
+        state: restarted
+        enabled: yes
+
+-sudo systemcl status apache2
+-ansible-playbbok /home/myansible/confpk.yml
+
+Q:sudo ansible-pull -d /home/myansible/pe -U https.//djdjdjidfj.git  -i   /home/fffg.///inventory.ini appdep.yml
+
+[localhost]
+127.0.0.1 ansible_connection=local
+
+---
+- name: Deploy a PHP Web Application
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Install Apache and PHP
+      apt:
+        name:
+          - apache2
+          - php
+        state: present
+
+    - name: Deploy a PHP application
+      copy:
+        content: |
+          <?php
+          echo "<h1>Hello from Ansible and PHP!</h1>";
+          echo "<body>This is demo page</body>";
+          ?>
+        dest: /var/www/html/index.php
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+
+
+
+
+- name: Run Java Program using Ansible
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Compile Java Program
+      command: javac /home/myansibleprj/HelloWorld.java
+      args:
+        chdir: /home/myansibleprj
+      register: compile_output
+
+    - name: Run Java Program
+      command: java -cp /home/myansibleprj HelloWorld
+      args:
+        chdir: /home/myansibleprj
+      register: run_output
+
+    - name: Display Java Program Output
+      debug:
+        msg: "{{ run_output.stdout }}"
+
+
+
